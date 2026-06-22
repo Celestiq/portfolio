@@ -1,0 +1,32 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  link?: string;
+}
+
+const { title, description, link } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout title={title} description={description}>
+  <header class="detail-header">
+    <h1>{title}</h1>
+    <p class="detail-subtitle">{description}</p>
+    {link && (
+      <p class="detail-meta">
+        <a href={link} target="_blank" rel="noopener noreferrer">
+          {link} &rarr;
+        </a>
+      </p>
+    )}
+  </header>
+
+  <article class="prose">
+    <slot />
+  </article>
+
+  <a href={`${base}/projects`} class="back-link">&larr; All projects</a>
+</BaseLayout>

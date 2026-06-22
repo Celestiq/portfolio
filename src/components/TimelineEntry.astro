@@ -1,0 +1,33 @@
+---
+interface Props {
+  year: string;
+  title: string;
+  description: string;
+  images: string[];
+}
+
+const { year, title, description, images } = Astro.props;
+---
+
+<div class="timeline-entry">
+  <span class="timeline-year" aria-hidden="true">{year}</span>
+  <div class="timeline-content">
+    <h3 class="timeline-title">{title}</h3>
+    <p class="timeline-desc">{description}</p>
+    {images.length > 0 && (
+      <div class="timeline-images" role="list">
+        {images.map((src, i) => (
+          <img
+            role="listitem"
+            class="timeline-img"
+            src={src}
+            alt={`${title} — photo ${i + 1}`}
+            loading="lazy"
+            width="80"
+            height="60"
+          />
+        ))}
+      </div>
+    )}
+  </div>
+</div>

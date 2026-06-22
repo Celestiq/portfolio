@@ -1,0 +1,28 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  date: Date;
+  excerpt: string;
+  href: string;
+}
+
+const { title, subtitle, date, excerpt, href } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<li class="card-item">
+  <p class="card-meta">
+    <time datetime={date.toISOString()}>{formattedDate}</time>
+  </p>
+  <h2 class="card-title">
+    <a href={href}>{title}</a>
+  </h2>
+  {subtitle && <p class="card-subtitle">{subtitle}</p>}
+  <p class="card-excerpt">{excerpt}</p>
+</li>

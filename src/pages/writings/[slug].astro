@@ -1,0 +1,62 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { getHtmlWritings } from '../../utils/writings';
+import WritingLayout from '../../layouts/WritingLayout.astro';
+
+export async function getStaticPaths() {
+  const mdEntries = await getCollection('writings');
+  const htmlWritings = await getHtmlWritings();
+
+  const mdPaths = mdEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { type: 'md' as const, mdEntry: entry, htmlWriting: null },
+  }));
+
+  const htmlPaths = htmlWritings.map((w) => ({
+    params: { slug: w.slug },
+    props: {
+      type: 'html' as const,
+      mdEntry: null,
+      htmlWriting: w,
+    },
+  }));
+
+  return [...mdPaths, ...htmlPaths];
+}
+
+interface Props {
+  type: 'md' | 'html';
+  mdEntry: CollectionEntry<'writings'> | null;
+  htmlWriting: {
+    title: string;
+    subtitle?: string;
+    date: Date;
+    body?: string;
+  } | null;
+}
+
+const { type, mdEntry, htmlWriting } = Astro.props;
+
+let Content: any = null;
+let title = '';
+let subtitle: string | undefined;
+let date: Date = new Date();
+
+if (type === 'md' && mdEntry) {
+  const rendered = await render(mdEntry);
+  Content = rendered.Content;
+  title = mdEntry.data.title;
+  subtitle = mdEntry.data.subtitle;
+  date = mdEntry.data.date;
+} else if (type === 'html' && htmlWriting) {
+  title = htmlWriting.title;
+  subtitle = htmlWriting.subtitle;
+  date = htmlWriting.date;
+}
+---
+
+<WritingLayout title={title} subtitle={subtitle} date={date}>
+  {type === 'md' && Content && <Content />}
+  {type === 'html' && htmlWriting && <div set:html={htmlWriting.body} />}
+</WritingLayout>

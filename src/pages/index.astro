@@ -1,0 +1,47 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TimelineEntry from '../components/TimelineEntry.astro';
+import { timeline } from '../data/timeline';
+import introPhoto from '../assets/intro.jpg';
+---
+
+<BaseLayout>
+  <section class="intro-section" aria-label="Introduction">
+    <div class="intro-inner">
+      <Image src={introPhoto} alt="Aayush" class="intro-photo" width={296} height={527} />
+      <div class="intro-text">
+        <h1>Aayush</h1>
+        <p>
+          I build systems and write about why they're built the way they are.
+          Currently building <strong>Celestiq Lattice</strong>, an open-source protocol
+          for sovereign, federated communication between people, devices, and AI agents.
+        </p>
+        <p>
+          I also write <strong>The Civic Architect</strong>, a publication on philosophy,
+          technology, policy, and politics as one connected system.
+        </p>
+        <p>
+          Mechanical engineer by training, systems builder by inclination. Based in Bengaluru.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline-section" aria-labelledby="timeline-heading">
+    <p class="section-label" id="timeline-heading">Journey</p>
+    <div class="timeline" role="list">
+      <div class="timeline-spine" aria-hidden="true"></div>
+      {timeline.map((entry) => (
+        <div role="listitem">
+          <TimelineEntry
+            year={entry.year}
+            title={entry.title}
+            description={entry.description}
+            images={entry.images}
+          />
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

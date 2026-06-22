@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WritingCard from '../../components/WritingCard.astro';
+import { getAllWritings } from '../../utils/writings';
+
+const writings = await getAllWritings();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout title="Writing" description="Essays and notes.">
+  <header class="page-header">
+    <h1>Writing</h1>
+  </header>
+
+  {writings.length === 0 ? (
+    <p style="padding-top: 2rem; color: var(--color-text-secondary);">
+      Nothing here yet.
+    </p>
+  ) : (
+    <ul class="card-list" aria-label="Writings">
+      {writings.map((w) => (
+        <WritingCard
+          title={w.title}
+          subtitle={w.subtitle}
+          date={w.date}
+          excerpt={w.excerpt}
+          href={`${base}/writings/${w.slug}`}
+        />
+      ))}
+    </ul>
+  )}
+</BaseLayout>

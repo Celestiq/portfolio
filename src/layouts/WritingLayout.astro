@@ -1,0 +1,35 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  date: Date;
+  description?: string;
+}
+
+const { title, subtitle, date, description } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={description ?? subtitle}>
+  <header class="detail-header">
+    <h1>{title}</h1>
+    {subtitle && <p class="detail-subtitle">{subtitle}</p>}
+    <p class="detail-meta">
+      <time datetime={date.toISOString()}>{formattedDate}</time>
+    </p>
+  </header>
+
+  <article class="prose">
+    <slot />
+  </article>
+
+  <a href={`${base}/writings`} class="back-link">&larr; All writing</a>
+</BaseLayout>
