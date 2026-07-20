@@ -6,7 +6,8 @@
     "dev": "node scripts/generate-theme.mjs && astro dev",
     "build": "node scripts/generate-theme.mjs && astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "new:project": "node scripts/new-project.mjs"
   },
   "dependencies": {
     "astro": "^4.16.18",
