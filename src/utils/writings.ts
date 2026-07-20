@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import { generateExcerpt } from './excerpt';
+import { decodeHtmlEntities } from './decodeEntities';
 
 export interface WritingMeta {
   slug: string;
@@ -37,11 +38,11 @@ async function loadHtmlWritings(): Promise<WritingMeta[]> {
       return {
         slug,
         type: 'html' as const,
-        title: data.title ?? slug,
-        subtitle: data.subtitle,
+        title: decodeHtmlEntities(data.title ?? slug),
+        subtitle: data.subtitle ? decodeHtmlEntities(data.subtitle) : undefined,
         date: new Date(data.date ?? Date.now()),
         image: data.image,
-        excerpt: data.excerpt ?? generateExcerpt(content, 'html'),
+        excerpt: data.excerpt ? decodeHtmlEntities(data.excerpt) : generateExcerpt(content, 'html'),
         body: content,
       };
     })
@@ -55,11 +56,11 @@ export async function getAllWritings(): Promise<WritingMeta[]> {
   const mdWritings: WritingMeta[] = mdEntries.map(e => ({
     slug: e.slug,
     type: 'md' as const,
-    title: e.data.title,
-    subtitle: e.data.subtitle,
+    title: decodeHtmlEntities(e.data.title),
+    subtitle: e.data.subtitle ? decodeHtmlEntities(e.data.subtitle) : undefined,
     date: e.data.date,
     image: e.data.image,
-    excerpt: e.data.excerpt ?? generateExcerpt(e.body ?? '', 'md'),
+    excerpt: e.data.excerpt ? decodeHtmlEntities(e.data.excerpt) : generateExcerpt(e.body ?? '', 'md'),
   }));
 
   return [...mdWritings, ...htmlWritings].sort(

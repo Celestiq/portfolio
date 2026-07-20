@@ -49,6 +49,16 @@ function toISODate(rfcDate) {
   return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0];
 }
 
+const NAMED_ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+
+function decodeEntities(str) {
+  if (!str) return str;
+  return str
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+    .replace(/&([a-zA-Z]+);/g, (_, name) => NAMED_ENTITIES[name] ?? `&${name};`);
+}
+
 // ── HTML cleaning ──────────────────────────────────────────────────────────
 
 function stripImages(html) {
@@ -91,9 +101,9 @@ function parseItems(xml) {
     if (!title || !content) continue;
 
     items.push({
-      title: title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>'),
+      title: decodeEntities(title),
       date: pubDate ? toISODate(pubDate) : null,
-      subtitle: description ? description.replace(/<[^>]+>/g, '').trim() : null,
+      subtitle: description ? decodeEntities(description.replace(/<[^>]+>/g, '').trim()) : null,
       content,
     });
   }

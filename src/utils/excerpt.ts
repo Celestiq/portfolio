@@ -1,8 +1,10 @@
+import { decodeHtmlEntities } from './decodeEntities';
+
 export function generateExcerpt(content: string, type: 'md' | 'html', maxLength = 200): string {
   let text = content;
 
   if (type === 'html') {
-    text = text.replace(/<[^>]+>/g, ' ');
+    text = decodeHtmlEntities(text.replace(/<[^>]+>/g, ' '));
   } else {
     text = text
       .replace(/```[\s\S]*?```/g, '')
